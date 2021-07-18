@@ -12,6 +12,7 @@ import org.apache.kafka.streams.kstream.KStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import ccs.perform.util.PerformSnapshot;
 import ccs.perform.util.SequencialPerformCounter;
 
 public class StreamConsumerMain {
@@ -54,9 +55,8 @@ public class StreamConsumerMain {
                 TimeUnit.NANOSECONDS.sleep(loop_ns);
                 et = System.nanoTime();
 
-                int err = pc.getErr();
-                int count = pc.retrievePerform();
-                log.info("{}: {} op, {} errors, {} ns/op", key, count, err, (double)(et-st)/count );
+                PerformSnapshot snap = pc.reset();
+                snap.print(log, et-st);
             }
         } catch( Throwable th ) {
             th.printStackTrace();

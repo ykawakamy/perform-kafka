@@ -12,6 +12,7 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import ccs.perform.util.PerformSnapshot;
 import ccs.perform.util.SequencialPerformCounter;
 
 public class PollingConsumerMain {
@@ -57,9 +58,8 @@ public class PollingConsumerMain {
                     consumer.commitAsync();
                 }
 
-                int err = pc.getErr();
-                int count = pc.retrievePerform();
-                log.info("{}: {} op, {} errors, {} ns/op", key, count, err, (double)(et-st)/count );
+                PerformSnapshot snap = pc.reset();
+                snap.print(log, et-st);
             }
         } catch( Throwable th ) {
             th.printStackTrace();
